@@ -1,0 +1,15 @@
+symbol,market,provider
+RELIANCE,NSE_STOCK,yfinance
+TCS,NSE_STOCK,yfinance
+INFY,NSE_STOCK,yfinance
+HDFCBANK,NSE_STOCK,yfinance
+ICICIBANK,NSE_STOCK,yfinance
+^NSEI,NSE_INDEX,yfinance
+^NSEBANK,NSE_INDEX,yfinance
+GC=F,INTERNATIONAL_GOLD,yfinance
+CL=F,INTERNATIONAL_CRUDE,yfinance
+BZ=F,INTERNATIONAL_BRENT,yfinance
+NG=F,INTERNATIONAL_NATGAS,yfinance
+MCX_GOLD,MCX_COMMODITY,licensed_provider_required
+MCX_CRUDEOIL,MCX_COMMODITY,licensed_provider_required
+MCX_NATURALGAS,MCX_COMMODITY,licensed_provider_required
