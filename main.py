@@ -121,3 +121,21 @@ def backtest(symbol: str = "RELIANCE", market: str = "auto", period: str = "60d"
         return {"symbol": resolve_symbol(symbol, market), "period": period, "interval": interval, "candles": len(x), "total_return_pct": round(total * 100, 2), "max_drawdown_pct": round(float(drawdown.min()) * 100, 2), "win_rate_pct_on_nonzero_bars": round(win_rate, 2), "position_changes": trades, "assumptions": "Illustrative EMA9/21 long-only bar-close backtest; no brokerage, taxes, slippage, corporate actions or realistic order simulation. Not a prediction."}
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc))
+
+
+@app.get("/api/candles")
+def candles(symbol: str = "RELIANCE", market: str = "auto", period: str = "5d", interval: str = "5m", limit: int = 100):
+    """Return real provider candles for rendering; never generates synthetic prices."""
+    try:
+        df = fetch_history(symbol, period, interval, market).tail(max(10, min(limit, 300)))
+        from indicators import add_indicators
+        df = add_indicators(df)
+        rows = []
+        for stamp, row in df.iterrows():
+            def num(key):
+                value = row.get(key)
+                return None if pd.isna(value) else float(value)
+            rows.append({"time": str(stamp), "open": num("Open"), "high": num("High"), "low": num("Low"), "close": num("Close"), "volume": num("Volume"), "ema9": num("EMA9"), "ema21": num("EMA21"), "vwap": num("VWAP")})
+        return {"symbol": resolve_symbol(symbol, market), "candles": rows, "count": len(rows), "interval": interval, "note": "Provider-returned historical candles; may be delayed or incomplete."}
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
